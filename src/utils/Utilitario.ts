@@ -155,3 +155,7 @@ class Utilitario {
 }
 
 export default new Utilitario();
+
+
+
+/*esse arquivo é um utilitário que contém métodos para formatação e validação de dados relacionados a produtos, como datas, códigos, preços, quantidades e status. Ele também inclui métodos para verificar se uma categoria foi selecionada. A classe Utilitario é exportada como uma instância única para ser utilizada em outras partes da aplicação.*/
