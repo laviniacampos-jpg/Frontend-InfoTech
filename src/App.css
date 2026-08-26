@@ -1,0 +1,312 @@
+/* ================================
+   CONTAINER PRINCIPAL
+================================ */
+
+.produto-container {
+    min-height: 100vh;
+    padding: 40px 20px;
+    background:
+        radial-gradient(circle at top, #3b176b 0%, transparent 35%),
+        linear-gradient(135deg, #0d0d12, #15121c 60%, #211132);
+
+    color: #f5f5f5;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* ================================
+   TÍTULO
+================================ */
+
+.produto-container h1 {
+    text-align: center;
+    font-size: 42px;
+    margin-bottom: 8px;
+    font-weight: 700;
+
+    background: linear-gradient(90deg, #ffffff, #c084fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.produto-subtitulo {
+    text-align: center;
+    color: #b9a9c9;
+    font-size: 17px;
+    margin-bottom: 30px;
+}
+
+
+/* ================================
+   CARD DO FORMULÁRIO
+================================ */
+
+.produto-form-card {
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto;
+
+    padding: 30px;
+
+    background: rgba(25, 22, 32, 0.92);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.45),
+        0 0 30px rgba(126, 34, 206, 0.08);
+
+    backdrop-filter: blur(10px);
+}
+
+
+/* ================================
+   TÍTULO DO FORMULÁRIO
+================================ */
+
+.produto-form-card h2 {
+    text-align: center;
+    margin-bottom: 25px;
+
+    font-size: 25px;
+    color: #ffffff;
+}
+
+
+/* ================================
+   CAMPOS
+================================ */
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #d8c7e8;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px 14px;
+
+    background: #121116;
+    color: #ffffff;
+
+    border: 1px solid #41384b;
+    border-radius: 9px;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: all 0.2s ease;
+}
+
+
+/* Efeito ao clicar */
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #a855f7;
+
+    box-shadow:
+        0 0 0 3px rgba(168, 85, 247, 0.12),
+        0 0 15px rgba(168, 85, 247, 0.12);
+}
+
+
+/* Placeholder */
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #77717f;
+}
+
+
+/* Textarea */
+
+.form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+
+/* ================================
+   CAMPOS EM DUAS COLUNAS
+================================ */
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+
+/* ================================
+   CHECKBOX
+================================ */
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin: 20px 0;
+
+    color: #d8c7e8;
+}
+
+.checkbox-group input {
+    width: 17px;
+    height: 17px;
+
+    accent-color: #a855f7;
+}
+
+
+/* ================================
+   BOTÃO
+================================ */
+
+.btn-cadastrar {
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: linear-gradient(
+        135deg,
+        #7e22ce,
+        #a855f7
+    );
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+
+    box-shadow:
+        0 8px 20px rgba(126, 34, 206, 0.25);
+}
+
+.btn-cadastrar:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 28px rgba(168, 85, 247, 0.35);
+}
+
+.btn-cadastrar:active {
+    transform: translateY(0);
+}
+
+
+/* ================================
+   PRODUTOS CADASTRADOS
+================================ */
+
+.produtos-section {
+    width: 100%;
+    max-width: 1000px;
+
+    margin: 45px auto 0;
+}
+
+.produtos-section h2 {
+    text-align: center;
+
+    font-size: 26px;
+    margin-bottom: 20px;
+
+    color: #ffffff;
+}
+
+
+/* ================================
+   MENSAGEM SEM PRODUTOS
+================================ */
+
+.sem-produtos {
+    text-align: center;
+
+    padding: 30px;
+
+    background: rgba(25, 22, 32, 0.7);
+
+    border: 1px dashed #4b4056;
+    border-radius: 14px;
+
+    color: #93889e;
+}
+
+
+/* ================================
+   CARD DO PRODUTO
+================================ */
+
+.produto-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 20px;
+    margin-bottom: 12px;
+
+    background: #19161f;
+
+    border: 1px solid #30283a;
+    border-radius: 12px;
+
+    transition: all 0.2s ease;
+}
+
+.produto-card:hover {
+    border-color: #7e22ce;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+
+/* ================================
+   RESPONSIVIDADE
+================================ */
+
+@media (max-width: 600px) {
+
+    .produto-container {
+        padding: 25px 12px;
+    }
+
+    .produto-container h1 {
+        font-size: 30px;
+    }
+
+    .produto-form-card {
+        padding: 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
