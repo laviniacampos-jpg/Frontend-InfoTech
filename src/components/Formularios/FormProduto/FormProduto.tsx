@@ -1,309 +1,269 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ProdutoRequests from '../../../fetch/ProdutoRequests';
-import type {ProdutoDTO} from '../../../dto/ProdutoDTO';
-import Utilitario from '../../../utils/Utilitario';
+import React, { useState } from "react";
+import ProdutoRequests from "../../../fetch/ProdutoRequests";
 
-function FormProduto() {
+interface IProduto {
+  id_produto: number;
+  id_categoria: number;
+  codigo: string;
+  nome: string;
+  descricao: string;
+  preco_unitario: number;
+  quantidade_disponivel: number;
+  quantidade_minima: number;
+  ativo: boolean;
+}
 
-    const navigate = useNavigate();
+interface FormProdutoProps {
+  produtos?: IProduto[];
+  onSuccess?: () => void;
+}
 
-    const [formData, setFormData] = useState<ProdutoDTO>({
-        id_categoria: 0,
-        codigo: '',//s
-        nome: '',//s
-        descricao: '',//s
-        preco_unitario: 0,//s
+export default function FormProduto({ produtos = [], onSuccess }: FormProdutoProps) {
+  const [formData, setFormData] = useState({
+    id_categoria: 1,
+    codigo: "",
+    nome: "",
+    descricao: "",
+    preco_unitario: 0,
+    quantidade_disponivel: 0,
+    quantidade_minima: 0,
+    ativo: true,
+  });
+  const [erroTela, setErroTela] = useState<string | null>(null);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type } = e.target;
+
+    let val: string | number | boolean = value;
+
+    if (type === "checkbox") {
+      val = (e.target as HTMLInputElement).checked;
+    } else if (type === "number") {
+      val = value === "" ? 0 : Number(value);
+    } else if (name === "id_categoria") {
+      val = Number(value);
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: val,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Formulário enviado:", formData);
+    setErroTela(null);
+
+    if (!formData.codigo.trim() || !formData.nome.trim()) {
+      const erroValidacao = "Por favor, preencha o Código e o Nome do produto.";
+      console.error("Erro de validação:", erroValidacao, formData);
+      setErroTela(`Erro ao cadastrar: ${erroValidacao}`);
+      return;
+    }
+
+    const precoInformado = String(formData.preco_unitario)
+      .replace(/R\$\s*/g, "")
+      .replace(",", ".");
+    const payload = {
+      ...formData,
+      id_categoria: Number(formData.id_categoria),
+      preco_unitario: Number(precoInformado),
+      quantidade_disponivel: Number(formData.quantidade_disponivel),
+      quantidade_minima: Number(formData.quantidade_minima),
+    };
+
+    try {
+      console.log("Payload enviado:", payload);
+      const resposta = await ProdutoRequests.criar(payload);
+      console.log("Resposta do servidor:", resposta);
+
+      if (!resposta) {
+        throw new Error(
+          "O servidor recusou o cadastro. Verifique se o Código do produto já existe no banco!"
+        );
+      }
+
+      alert("Produto cadastrado com sucesso!");
+      setFormData({
+        id_categoria: 1,
+        codigo: "",
+        nome: "",
+        descricao: "",
+        preco_unitario: 0,
         quantidade_disponivel: 0,
         quantidade_minima: 0,
         ativo: true,
-        data_cadastro: new Date()//s
-    });
+      });
 
-    // Atualiza o state a partir de qualquer input do formulário
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (error) {
+      console.error("Erro ao cadastrar produto:", error);
+      const erroApi = error as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+      setErroTela(
+        "Erro ao cadastrar: " +
+        (erroApi.response?.data?.message || erroApi.message || "Erro desconhecido")
+      );
+    }
+  };
 
-				// Verifica se o campo alterado é o código, se sim irá formatar usando uma expressão regular
-        if (name === 'codigo') {
-            const codigoFormatado = Utilitario.formatarCodigo(value);
-            setFormData(prev => ({ ...prev, [name]: codigoFormatado }));
-            return;
-        }
-        		// Verifica se o campo alterado é o  Data, se sim irá formatar usando uma expressão regular
-        if (name === 'Data') {
-            const DataFormatado = Utilitario.formatarDataParaInput(value);
-            setFormData(prev => ({ ...prev, [name]: DataFormatado }));
-            return;
-        }
-        		// Verifica se o campo alterado é o  DataParaInput, se sim irá formatar usando uma expressão regular
-        if (name === 'DataParaInput') {
-            const DataFormatado = Utilitario.formatarDataParaInput(value);
-            setFormData(prev => ({ ...prev, [name]: DataFormatado }));
-            return;
-        }
+  return (
+    <div className="container mx-auto p-4">
+      <form onSubmit={handleSubmit} className="form-container mb-8">
+        <h2>Cadastro de Produtos</h2>
 
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
+        <div>
+          <label>Categoria:</label>
+          <select
+            name="id_categoria"
+            value={formData.id_categoria}
+            onChange={handleChange}
+          >
+            <option value={1}>Periféricos</option>
+            <option value={2}>Hardware</option>
+          </select>
+        </div>
 
-    // Envia os dados para a requisição
-    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
-        e.preventDefault(); // evita o recarregamento da página
-        
-        // valida para saber se o campo preço contém uma expressão regular de e-mail
-        if (!Utilitario.validarPreco(formData.preco_unitario)) {
-            alert("Preço inválido");
-            return;
-        }
-
-          // valida para saber se o campo nome contém uma expressão regular de e-mail
-        if (!Utilitario.validarNome(formData.nome)) {
-            alert("Nome inválido");
-            return;
-        }
-          // valida para saber se o campo quantidade mínima contém uma expressão regular de e-mail
-        if (!Utilitario.validarQuantidadeMinima(formData.quantidade_minima)) {
-            alert("Quantidade mínima inválida");
-            return;
-        }
-         // valida para saber se o campo preço contém uma expressão regular de e-mail
-        if (!Utilitario.validarPreco(formData.preco_unitario)) {
-            alert("Preço inválido");
-            return;
-        }
-           // valida para saber se o campo categoria contém uma expressão regular de e-mail
-        if (!Utilitario.validarCategoria(formData.id_categoria)) {
-            alert("Categoria inválida");
-            return;
-        }
-           // valida para saber se o campo código contém uma expressão regular de e-mail
-        if (!Utilitario.validarCodigo(formData.codigo)) {
-            alert("Código inválido");
-            return;
-        }
-        // chama o método que irá fazer a requisição à API
-        const resposta = await ProdutoRequests.criar(formData);
-        if (resposta) {
-            alert("Produto cadastrado com sucesso");
-        } else {
-            alert("Erro ao cadastrar produto");
-        }
-
-        if (resposta) {
-    alert("Produto cadastrado com sucesso");
-    navigate('/lista/produtos');
-}
-    };
-
-    return (
-        <main className="bg-gray-100 flex-1 py-8 sm:py-12 px-4 sm:px-6 lg:px-8 overflow-y-auto">
-            <div className="max-w-3xl mx-auto">
-                <form onSubmit={handleSubmit} className="bg-white shadow-2xl rounded-2xl p-6 sm:p-10 border border-slate-200">
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl text-center font-bold text-slate-800 mb-8 sm:mb-12">
-                        Cadastro de Produto
-                    </h1>
-
-                   {/* Código e Nome */}
-<div className="flex flex-col sm:flex-row gap-6">
-
-    <div className="flex-1">
-        <label
-            htmlFor="codigo"
-            className="block text-sm font-semibold text-slate-700 mb-2"
-        >
-            Código do Produto
-        </label>
-
-        <input
+        <div>
+          <label>Código:</label>
+          <input
             type="text"
             name="codigo"
-            id="codigo"
             value={formData.codigo}
-            required
             onChange={handleChange}
-            placeholder="Digite o código do produto"
-            className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
-        />
-    </div>
+            required
+          />
+        </div>
 
-    <div className="flex-1">
-        <label
-            htmlFor="nome"
-            className="block text-sm font-semibold text-slate-700 mb-2"
-        >
-            Nome
-        </label>
-
-        <input
+        <div>
+          <label>Nome do produto:</label>
+          <input
             type="text"
             name="nome"
-            id="nome"
-            required
-            minLength={3}
+            value={formData.nome}
             onChange={handleChange}
-            placeholder="Digite o nome do produto"
-            className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
-        />
-    </div>
+            required
+          />
+        </div>
 
-</div>
-
-{/* Descrição e Categoria */}
-<div className="flex flex-col sm:flex-row gap-6 mt-6">
-
-    <div className="flex-1">
-        <label
-            htmlFor="descricao"
-            className="block text-sm font-semibold text-slate-700 mb-2"
-        >
-            Descrição
-        </label>
-
-        <input
-            type="text"
+        <div>
+          <label>Descrição:</label>
+          <textarea
             name="descricao"
-            id="descricao"
+            value={formData.descricao}
             onChange={handleChange}
-            placeholder="Digite a descrição do produto"
-            className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all placeholder:text-slate-400"
-        />
-    </div>
+          />
+        </div>
 
-    <div className="flex-1">
-        <label
-            htmlFor="id_categoria"
-            className="block text-sm font-semibold text-slate-700 mb-2"
-        >
-            Categoria
-        </label>
-
-        <input
-            type="number"
-            name="id_categoria"
-            id="id_categoria"
-            required
-            onChange={handleChange}
-            placeholder="Informe o ID da categoria"
-            className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all"
-        />
-    </div>
-
-</div>
-
-{/* Preço e Data */}
-<div className="flex flex-col sm:flex-row gap-6 mt-6">
-
-    <div className="flex-1">
-        <label
-            htmlFor="preco_unitario"
-            className="block text-sm font-semibold text-slate-700 mb-2"
-        >
-            Preço Unitário
-        </label>
-
-        <input
+        <div>
+          <label>Preço unitário:</label>
+          <input
             type="number"
             step="0.01"
             name="preco_unitario"
-            id="preco_unitario"
+            value={formData.preco_unitario}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                preco_unitario: e.target.value === "" ? 0 : parseFloat(e.target.value),
+              })
+            }
             required
-            onChange={handleChange}
-            placeholder="0,00"
-            className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all"
-        />
-    </div>
+          />
+        </div>
 
-    <div className="flex-1">
-        <label
-            htmlFor="data_cadastro"
-            className="block text-sm font-semibold text-slate-700 mb-2"
-        >
-            Data de Cadastro
-        </label>
-
-        <input
-            type="date"
-            name="data_cadastro"
-            id="data_cadastro"
-            onChange={handleChange}
-            className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all"
-        />
-    </div>
-
-</div>
-
-{/* Quantidades */}
-<div className="flex flex-col sm:flex-row gap-6 mt-6">
-
-    <div className="flex-1">
-        <label
-            htmlFor="quantidade_disponivel"
-            className="block text-sm font-semibold text-slate-700 mb-2"
-        >
-            Quantidade Disponível
-        </label>
-
-        <input
+        <div>
+          <label>Quantidade disponível:</label>
+          <input
             type="number"
             name="quantidade_disponivel"
-            id="quantidade_disponivel"
-            onChange={handleChange}
-            placeholder="0"
-            className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all"
-        />
-    </div>
+            value={formData.quantidade_disponivel}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                quantidade_disponivel: e.target.value === "" ? 0 : parseInt(e.target.value, 10),
+              })
+            }
+            required
+          />
+        </div>
 
-    <div className="flex-1">
-        <label
-            htmlFor="quantidade_minima"
-            className="block text-sm font-semibold text-slate-700 mb-2"
-        >
-            Quantidade Mínima
-        </label>
-
-        <input
+        <div>
+          <label>Quantidade mínima:</label>
+          <input
             type="number"
             name="quantidade_minima"
-            id="quantidade_minima"
+            value={formData.quantidade_minima}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                quantidade_minima: e.target.value === "" ? 0 : parseInt(e.target.value, 10),
+              })
+            }
             required
-            onChange={handleChange}
-            placeholder="0"
-            className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all"
-        />
+          />
+        </div>
+
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              name="ativo"
+              checked={formData.ativo}
+              onChange={handleChange}
+            />
+            Produto ativo
+          </label>
+        </div>
+
+        {erroTela && (
+          <div
+            style={{
+              color: "red",
+              backgroundColor: "#fee2e2",
+              padding: "10px",
+              borderRadius: "5px",
+              marginBottom: "10px",
+            }}
+          >
+            {erroTela}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          className="button-class"
+        >
+          Cadastrar Produto
+        </button>
+      </form>
+
+      {/* Exibição da Lista */}
+      <section className="produtos-cadastrados">
+        <h3>Produtos Cadastrados ({produtos.length})</h3>
+        {produtos.length === 0 ? (
+          <p>Nenhum produto cadastrado.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {produtos.map((item, index) => (
+              <div key={item.id_produto || index} className="border p-4 rounded shadow">
+                <h4>{item.nome}</h4>
+                <p>Código: {item.codigo}</p>
+                <p>{item.descricao || "Sem descrição."}</p>
+                <p><strong>R$ {Number(item.preco_unitario || 0).toFixed(2)}</strong></p>
+                <span>Estoque: {item.quantidade_disponivel ?? 0}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
-
-</div>
-
-{/* Ativo */}
-<div className="mt-6">
-
-    <label
-        htmlFor="ativo"
-        className="block text-sm font-semibold text-slate-700 mb-2"
-    >
-        Produto Ativo
-    </label>
-
-    <select
-        id="ativo"
-        name="ativo"
-        onChange={(e) =>
-            setFormData(prev => ({
-                ...prev,
-                ativo: e.target.value === "true"
-            }))
-        }
-        className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-slate-500 focus:outline-none transition-all"
-    >
-        <option value="true">Sim</option>
-        <option value="false">Não</option>
-    </select>
-
-</div>
-                </form>
-            </div>
-        </main>
-    );
+  );
 }
-
-export default FormProduto;
