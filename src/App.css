@@ -1,216 +1,315 @@
-/* ================================
-   CONTAINER PRINCIPAL
-================================ */
+
+:root {
+    --bg-primary: #0f0b1a;
+    --bg-secondary: #171126;
+    --bg-card: #211936;
+
+    --purple: #8b5cf6;
+    --purple-dark: #6d28d9;
+    --purple-light: #a78bfa;
+
+    --text-primary: #f8fafc;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+
+    --border: #31264a;
+
+    --green: #22c55e;
+    --red: #ef4444;
+}
+
+
+/* =========================
+   ESTRUTURA PRINCIPAL
+========================= */
+
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(124, 58, 237, 0.16),
+            transparent 35%
+        ),
+        var(--bg-primary);
+}
+
+.main-content {
+    flex: 1;
+    width: 100%;
+    padding: 50px 24px 70px;
+}
 
 .produto-container {
-    min-height: 100vh;
-    padding: 40px 20px;
-    background:
-        radial-gradient(circle at top, #3b176b 0%, transparent 35%),
-        linear-gradient(135deg, #0d0d12, #15121c 60%, #211132);
-
-    color: #f5f5f5;
-    font-family: Arial, Helvetica, sans-serif;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
 
-/* ================================
-   TÍTULO
-================================ */
+/* =========================
+   CABEÇALHO DA PÁGINA
+========================= */
 
-.produto-container h1 {
-    text-align: center;
-    font-size: 42px;
-    margin-bottom: 8px;
+.page-header {
+    margin-bottom: 32px;
+}
+
+.page-tag {
+    display: inline-block;
+    color: var(--purple-light);
+    font-size: 0.72rem;
     font-weight: 700;
-
-    background: linear-gradient(90deg, #ffffff, #c084fc);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
 }
+
+.page-header h1 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.15;
+}
+
 .produto-subtitulo {
-    text-align: center;
-    color: #b9a9c9;
-    font-size: 17px;
-    margin-bottom: 30px;
+    margin-top: 10px;
+    color: var(--text-secondary);
+    font-size: 1rem;
 }
 
 
-/* ================================
+/* =========================
    CARD DO FORMULÁRIO
-================================ */
+========================= */
 
 .produto-form-card {
     width: 100%;
-    max-width: 650px;
-    margin: 0 auto;
-
-    padding: 30px;
-
-    background: rgba(25, 22, 32, 0.92);
-    border: 1px solid rgba(168, 85, 247, 0.25);
+    background: rgba(33, 25, 54, 0.9);
+    border: 1px solid var(--border);
     border-radius: 18px;
-
+    padding: 32px;
     box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.45),
-        0 0 30px rgba(126, 34, 206, 0.08);
+        0 20px 50px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(139, 92, 246, 0.03);
+}
 
-    backdrop-filter: blur(10px);
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 30px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.card-icon {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: rgba(139, 92, 246, 0.15);
+    color: var(--purple-light);
+
+    font-size: 1.7rem;
+    font-weight: 400;
+}
+
+.card-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+}
+
+.card-header p {
+    margin: 4px 0 0;
+    color: var(--text-muted);
+    font-size: 0.88rem;
 }
 
 
-/* ================================
-   TÍTULO DO FORMULÁRIO
-================================ */
+/* =========================
+   FORMULÁRIO
+========================= */
 
-.produto-form-card h2 {
-    text-align: center;
-    margin-bottom: 25px;
-
-    font-size: 25px;
-    color: #ffffff;
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
 }
-
-
-/* ================================
-   CAMPOS
-================================ */
 
 .form-group {
-    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group.full-width {
+    grid-column: span 2;
 }
 
 .form-group label {
-    display: block;
-
-    margin-bottom: 7px;
-
-    color: #d8c7e8;
-    font-size: 15px;
+    color: var(--text-primary);
+    font-size: 0.86rem;
     font-weight: 600;
 }
 
 .form-group input,
-.form-group textarea,
-.form-group select {
+.form-group select,
+.form-group textarea {
     width: 100%;
-    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #120d1e;
+    color: var(--text-primary);
 
-    padding: 12px 14px;
+    padding: 13px 14px;
 
-    background: #121116;
-    color: #ffffff;
+    font-family: inherit;
+    font-size: 0.94rem;
 
-    border: 1px solid #41384b;
-    border-radius: 9px;
-
-    font-size: 15px;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 
     outline: none;
-
-    transition: all 0.2s ease;
 }
 
-
-/* Efeito ao clicar */
-
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
-    border-color: #a855f7;
-
-    box-shadow:
-        0 0 0 3px rgba(168, 85, 247, 0.12),
-        0 0 15px rgba(168, 85, 247, 0.12);
+.form-group input {
+    height: 48px;
 }
 
-
-/* Placeholder */
-
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: #77717f;
+.form-group select {
+    height: 48px;
+    cursor: pointer;
 }
-
-
-/* Textarea */
 
 .form-group textarea {
-    min-height: 100px;
+    min-height: 110px;
     resize: vertical;
 }
 
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #5f5a69;
+}
 
-/* ================================
-   CAMPOS EM DUAS COLUNAS
-================================ */
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--purple);
+    background: #160f24;
+    box-shadow:
+        0 0 0 3px rgba(139, 92, 246, 0.13);
 }
 
 
-/* ================================
-   CHECKBOX
-================================ */
+/* =========================
+   CAMPO DE DINHEIRO
+========================= */
+
+.input-money {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-money span {
+    position: absolute;
+    left: 14px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.input-money input {
+    padding-left: 42px;
+}
+
+
+/* =========================
+   RODAPÉ DO FORMULÁRIO
+========================= */
+
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+
+    margin-top: 30px;
+    padding-top: 24px;
+
+    border-top: 1px solid var(--border);
+}
 
 .checkbox-group {
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
 
-    margin: 20px 0;
-
-    color: #d8c7e8;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
 }
 
 .checkbox-group input {
-    width: 17px;
-    height: 17px;
-
-    accent-color: #a855f7;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--purple);
+    cursor: pointer;
 }
 
 
-/* ================================
+/* =========================
    BOTÃO
-================================ */
+========================= */
 
 .btn-cadastrar {
-    width: 100%;
+    min-height: 48px;
 
-    padding: 13px;
+    padding: 0 24px;
 
     border: none;
     border-radius: 10px;
 
     background: linear-gradient(
         135deg,
-        #7e22ce,
-        #a855f7
+        var(--purple),
+        var(--purple-dark)
     );
 
     color: white;
 
-    font-size: 16px;
-    font-weight: bold;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
 
     cursor: pointer;
 
-    transition: all 0.25s ease;
-
     box-shadow:
-        0 8px 20px rgba(126, 34, 206, 0.25);
+        0 8px 20px rgba(109, 40, 217, 0.25);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
 }
 
 .btn-cadastrar:hover {
     transform: translateY(-2px);
 
     box-shadow:
-        0 12px 28px rgba(168, 85, 247, 0.35);
+        0 12px 25px rgba(109, 40, 217, 0.35);
+
+    filter: brightness(1.08);
 }
 
 .btn-cadastrar:active {
@@ -218,95 +317,289 @@
 }
 
 
-/* ================================
-   PRODUTOS CADASTRADOS
-================================ */
+/* =========================
+   SEÇÃO DE PRODUTOS
+========================= */
 
 .produtos-section {
-    width: 100%;
-    max-width: 1000px;
-
-    margin: 45px auto 0;
+    margin-top: 55px;
 }
 
-.produtos-section h2 {
-    text-align: center;
+.section-title {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
 
-    font-size: 26px;
     margin-bottom: 20px;
+}
 
-    color: #ffffff;
+.section-title h2 {
+    margin: 0;
+
+    color: var(--text-primary);
+    font-size: 1.45rem;
+}
+
+.produto-count {
+    color: var(--text-muted);
+    font-size: 0.85rem;
 }
 
 
-/* ================================
-   MENSAGEM SEM PRODUTOS
-================================ */
+/* =========================
+   ESTADO VAZIO
+========================= */
 
 .sem-produtos {
+    min-height: 230px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
     text-align: center;
 
+    background: rgba(33, 25, 54, 0.6);
+
+    border: 1px dashed #41345d;
+    border-radius: 16px;
+
     padding: 30px;
+}
 
-    background: rgba(25, 22, 32, 0.7);
+.empty-icon {
+    width: 60px;
+    height: 60px;
 
-    border: 1px dashed #4b4056;
-    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    color: #93889e;
+    margin-bottom: 14px;
+
+    border-radius: 16px;
+
+    background: rgba(139, 92, 246, 0.1);
+
+    font-size: 1.7rem;
+}
+
+.sem-produtos h3 {
+    margin: 0;
+
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.sem-produtos p {
+    margin: 7px 0 0;
+
+    color: var(--text-muted);
+    font-size: 0.85rem;
 }
 
 
-/* ================================
-   CARD DO PRODUTO
-================================ */
+/* =========================
+   CARDS DE PRODUTOS
+========================= */
+
+.produtos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
 
 .produto-card {
+    padding: 20px;
+
+    background: var(--bg-card);
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.produto-card:hover {
+    transform: translateY(-3px);
+    border-color: #4b3a68;
+}
+
+.produto-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.produto-codigo {
+    color: var(--purple-light);
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.status-ativo,
+.status-inativo {
+    padding: 4px 9px;
+    border-radius: 999px;
+
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.status-ativo {
+    color: var(--green);
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.status-inativo {
+    color: var(--red);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.produto-card h3 {
+    margin: 16px 0 7px;
+
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.produto-card p {
+    min-height: 40px;
+
+    margin: 0;
+
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    line-height: 1.5;
+}
+
+.produto-info {
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    padding: 18px 20px;
-    margin-bottom: 12px;
+    margin-top: 18px;
+    padding-top: 15px;
 
-    background: #19161f;
-
-    border: 1px solid #30283a;
-    border-radius: 12px;
-
-    transition: all 0.2s ease;
+    border-top: 1px solid var(--border);
 }
 
-.produto-card:hover {
-    border-color: #7e22ce;
+.produto-info strong {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
 
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.25);
+.produto-info span {
+    color: var(--text-muted);
+    font-size: 0.75rem;
 }
 
 
-/* ================================
+/* =========================
+   RODAPÉ
+========================= */
+
+.rodape {
+    width: 100%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 22px 30px;
+
+    background: #0b0812;
+
+    border-top: 1px solid var(--border);
+
+    color: var(--text-muted);
+
+    font-size: 0.78rem;
+}
+
+.rodape p {
+    margin: 0;
+}
+
+
+/* =========================
    RESPONSIVIDADE
-================================ */
+========================= */
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
 
-    .produto-container {
-        padding: 25px 12px;
+    .produtos-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 
-    .produto-container h1 {
-        font-size: 30px;
+}
+
+
+@media (max-width: 700px) {
+
+    .main-content {
+        padding: 35px 16px 50px;
     }
 
     .produto-form-card {
-        padding: 20px;
+        padding: 22px;
     }
 
-    .form-row {
+    .form-grid {
         grid-template-columns: 1fr;
-        gap: 0;
     }
+
+    .form-group.full-width {
+        grid-column: span 1;
+    }
+
+    .form-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-cadastrar {
+        width: 100%;
+    }
+
+    .produtos-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section-title {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .rodape {
+        flex-direction: column;
+        text-align: center;
+    }
+
 }
+
+
+@media (max-width: 450px) {
+
+    .page-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .produto-form-card {
+        padding: 18px;
+        border-radius: 14px;
+    }
+
+    .card-header {
+        align-items: flex-start;
+    }
+
+}
+

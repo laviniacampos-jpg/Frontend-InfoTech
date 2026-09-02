@@ -2,12 +2,10 @@ import type { ProdutoDTO } from "../dto/ProdutoDTO";
 
 class ProdutoRequests {
 
-    private serverUrl: string;
     private endpoint: string;
 
     constructor() {
-        this.serverUrl = "http://localhost:3333";
-        this.endpoint = "/api/produtos";
+        this.endpoint = "http://localhost:3333/api/produtos";
     }
 
     async criar(produto: ProdutoDTO) {
@@ -16,7 +14,7 @@ class ProdutoRequests {
             const token = localStorage.getItem("token");
 
             const response = await fetch(
-                `${this.serverUrl}${this.endpoint}`,
+                this.endpoint,
                 {
                     method: "POST",
                     headers: {
@@ -28,14 +26,32 @@ class ProdutoRequests {
             );
 
             if (!response.ok) {
-                throw new Error("Erro ao cadastrar produto");
+                const corpo = await response.text();
+                let mensagem = "Erro ao cadastrar produto.";
+
+                if (corpo) {
+                    try {
+                        const dados = JSON.parse(corpo) as {
+                            message?: string;
+                            error?: string;
+                            detail?: string;
+                        };
+                        mensagem = dados.message ?? dados.error ?? dados.detail ?? corpo;
+                    } catch {
+                        mensagem = corpo;
+                    }
+                }
+
+                throw Object.assign(new Error(mensagem), {
+                    status: response.status,
+                });
             }
 
-            return await response.json();
+            return true;
 
         } catch (error) {
-            console.error(error);
-            return null;
+            console.error("Erro na requisição de cadastro:", error);
+            throw error;
         }
     }
 
@@ -45,7 +61,7 @@ class ProdutoRequests {
             const token = localStorage.getItem("token");
 
             const response = await fetch(
-                `${this.serverUrl}${this.endpoint}`,
+                this.endpoint,
                 {
                     headers: {
                         "Authorization": `Bearer ${token}`
@@ -62,42 +78,42 @@ class ProdutoRequests {
     }
     async obterProdutoPorId(id: number) {
 
-    try {
+        try {
 
-        const token = localStorage.getItem("token");
+            const token = localStorage.getItem("token");
 
-        const response = await fetch(
-            `${this.serverUrl}/api/produtos/${id}`,
-            {
-                method: "GET",
+            const response = await fetch(
+                `${this.endpoint}/${id}`,
+                {
+                    method: "GET",
 
-                headers: {
-                    "Content-Type": "application/json",
-                    ...(token
-                        ? {
-                            Authorization: `Bearer ${token}`
-                        }
-                        : {})
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(token
+                            ? {
+                                Authorization: `Bearer ${token}`
+                            }
+                            : {})
+                    }
                 }
+            );
+
+            if (!response.ok) {
+                throw new Error("Produto não encontrado.");
             }
-        );
 
-        if (!response.ok) {
-            throw new Error("Produto não encontrado.");
+            return await response.json();
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao buscar produto por ID:",
+                error
+            );
+
+            throw error;
         }
-
-        return await response.json();
-
-    } catch (error) {
-
-        console.error(
-            "Erro ao buscar produto por ID:",
-            error
-        );
-
-        throw error;
     }
-}
 }
 
 export default new ProdutoRequests();

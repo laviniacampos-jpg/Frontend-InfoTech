@@ -1,12 +1,12 @@
 import { type JSX, useEffect, useState } from "react";
 
-import ProdutoRequests from "../../fetch/ProdutoRequests";
+import ProdutoRequests from "../../../fetch/ProdutoRequests";
 
-import type { ProdutoDTO } from "../../dto/ProdutoDTO";
+import type { ProdutoDTO } from "../../../dto/ProdutoDTO";
 
 import { useNavigate } from "react-router-dom";
 
-import Utilitario from "../../utils/Utilitario";
+import Utilitario from "../../../utils/Utilitario";
 
 function ListagemProdutos(): JSX.Element {
 
@@ -34,14 +34,14 @@ function ListagemProdutos(): JSX.Element {
                 const listaDeProdutos =
                     await ProdutoRequests.listar();
 
-                setProdutos(listaDeProdutos);
+                setProdutos(Array.isArray(listaDeProdutos) ? listaDeProdutos : []);
 
             } catch (error) {
 
                 console.error(
                     `Erro ao buscar produtos: ${error}`
                 );
-
+                setProdutos([]);
                 alert("Erro ao criar a listagem de produtos.");
             }
         };
@@ -55,7 +55,7 @@ function ListagemProdutos(): JSX.Element {
     // FILTRO DE PRODUTOS
     // =====================================================
 
-    const produtosFiltrados = produtos.filter((produto) => {
+    const produtosFiltrados = (produtos || []).filter((produto) => {
 
         const textoBusca = busca.toLowerCase();
 

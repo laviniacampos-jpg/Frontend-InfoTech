@@ -1,16 +1,20 @@
-import { type JSX, useState } from "react";
+
+import { useState, type JSX } from "react";
+
 import { useNavigate } from "react-router-dom";
 
 import "./Navegacao.css";
-import appIcon from "../../assets/app-icon.png";
+
 import AuthRequests from "../../fetch/AuthRequests";
 
 function Navegacao(): JSX.Element {
+
     const navigate = useNavigate();
 
     const [menuAberto, setMenuAberto] = useState(false);
 
     const isAuthenticated = (() => {
+
         const isAuth = localStorage.getItem("isAuth");
         const token = localStorage.getItem("token");
 
@@ -19,140 +23,238 @@ function Navegacao(): JSX.Element {
             token &&
             AuthRequests.checkTokenExpiry()
         );
+
     })();
 
-    const nome = localStorage.getItem("nome") || "Usuário";
-    const email = localStorage.getItem("email") || "";
+    const nome =
+        localStorage.getItem("nome") || "Usuário";
+
+    const email =
+        localStorage.getItem("email") || "";
 
     const navegar = (rota: string) => {
+
         navigate(rota);
+
         setMenuAberto(false);
+
     };
 
     const sair = () => {
+
         AuthRequests.removeToken();
+
         navigate("/login");
+
         setMenuAberto(false);
+
     };
 
     return (
+
         <nav className="navegacao">
 
             <div className="nav-container">
 
                 {/* LOGO */}
-                <div
+
+                <button
                     className="nav-logo-container"
                     onClick={() => navegar("/")}
+                    type="button"
                 >
-                    <img
-                        src={appIcon}
-                        alt="Logo"
-                        className="nav-logo-img"
-                    />
 
-                    <h1 className="nav-logo">
-                        Meu Site
-                    </h1>
-                </div>
+                    <div className="nav-logo-mark">
+                        IT
+                    </div>
+
+                    <div className="nav-logo-text">
+
+                        <strong>
+                            InfoTech
+                        </strong>
+
+                        <span>
+                            Informática
+                        </span>
+
+                    </div>
+
+                </button>
+
 
                 {/* BOTÃO MOBILE */}
+
                 <button
                     className="nav-toggle"
-                    onClick={() => setMenuAberto(!menuAberto)}
+                    onClick={() =>
+                        setMenuAberto(!menuAberto)
+                    }
+                    type="button"
+                    aria-label="Abrir menu"
                 >
                     ☰
                 </button>
 
+
                 {/* MENU */}
+
                 <ul
-                    className={`nav-menu ${
-                        menuAberto ? "nav-menu-aberto" : ""
-                    }`}
+                    className={
+                        `nav-menu ${
+                            menuAberto
+                                ? "nav-menu-aberto"
+                                : ""
+                        }`
+                    }
                 >
 
                     {/* HOME */}
-                    <li className="nav-item">
+
+                    <li>
+
                         <button
                             className="nav-link"
                             onClick={() => navegar("/")}
+                            type="button"
                         >
+
                             <span>⌂</span>
+
                             Home
+
                         </button>
+
                     </li>
 
+
                     {/* PRODUTOS */}
+
                     {isAuthenticated && (
-                        <li className="nav-item">
+
+                        <li>
+
                             <button
                                 className="nav-link"
                                 onClick={() =>
-                                    navegar("/lista/produtos")
+                                    navegar(
+                                        "/lista/produtos"
+                                    )
                                 }
+                                type="button"
                             >
-                                <span>📦</span>
+
+                                <span>▣</span>
+
                                 Produtos
+
                             </button>
+
                         </li>
+
                     )}
+
 
                     {/* CATEGORIAS */}
+
                     {isAuthenticated && (
-                        <li className="nav-item">
+
+                        <li>
+
                             <button
                                 className="nav-link"
                                 onClick={() =>
-                                    navegar("/lista/categorias")
+                                    navegar(
+                                        "/lista/categorias"
+                                    )
                                 }
+                                type="button"
                             >
-                                <span>🏷️</span>
+
+                                <span>◇</span>
+
                                 Categorias
+
                             </button>
+
                         </li>
+
                     )}
 
+
                     {/* ESTOQUE */}
+
                     {isAuthenticated && (
-                        <li className="nav-item">
+
+                        <li>
+
                             <button
                                 className="nav-link"
                                 onClick={() =>
                                     navegar("/estoque")
                                 }
+                                type="button"
                             >
-                                <span>📊</span>
+
+                                <span>▥</span>
+
                                 Estoque
+
                             </button>
+
                         </li>
+
                     )}
 
+
                     {/* USUÁRIO */}
+
                     {isAuthenticated ? (
+
                         <li className="nav-user">
 
+                            <div className="nav-user-avatar">
+                                {nome.charAt(0).toUpperCase()}
+                            </div>
+
                             <div className="nav-user-info">
-                                <strong>{nome}</strong>
-                                <span>{email}</span>
+
+                                <strong>
+                                    {nome}
+                                </strong>
+
+                                <span>
+                                    {email}
+                                </span>
+
                             </div>
 
                             <button
                                 className="nav-button-sair"
                                 onClick={sair}
+                                type="button"
                             >
                                 Sair
                             </button>
 
                         </li>
+
                     ) : (
-                        <li className="nav-item">
+
+                        <li>
+
                             <button
                                 className="nav-button-login"
-                                onClick={() => navegar("/login")}
+                                onClick={() =>
+                                    navegar("/login")
+                                }
+                                type="button"
                             >
-                                Login
+                                Entrar
                             </button>
+
                         </li>
+
                     )}
 
                 </ul>
@@ -160,7 +262,9 @@ function Navegacao(): JSX.Element {
             </div>
 
         </nav>
+
     );
 }
 
 export default Navegacao;
+

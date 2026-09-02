@@ -23,37 +23,30 @@ class AuthRequests {
      */
     async login(login: { email: string, senha: string}) {       
         try {
-            // faz a requisição POST ao servidor...
             const response = await fetch(`${this.serverUrl}${this.endpointLogin}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                // passando as informações de login no corpo da requisição
                 body: JSON.stringify(login)
             });
-            
-            // Verifica alguma falha na comunicação
+
+            const data = await response.json().catch(() => null);
+
             if (!response.ok) {
-                console.log('Erro na autenticação');
-                throw new Error('Falha no login');
+                console.log('Erro na autenticação', data);
+                return false;
             }
-            // caso a requisição seja bem sucedida, armazena a resposta em uma constante
-            const data = await response.json();
-            console.log( data );
 
-            // verifica se o atributo auth da resposta tem o valor TRUE, se tiver é porque a autenticação teve sucesso
-            if (data.auth) {
-                // persistem o token, o nome e o id do professor no localstorage
+            if (data?.auth) {
                 this.persistToken(data.token, data.usuario, data.auth);
+                return true;
             }
 
-            // retorna a resposta da requisição a quem chamou a função
-            return true;
+            return false;
         } catch (error) {
-            // lança um erro em caso de falha
             console.error('Erro: ', error);
-            throw error;
+            return false;
         }
     }
 
